@@ -10,7 +10,7 @@ class PageController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function homePage(): Response
-    {
+    {        
         return $this->render('pages/home.html.twig');
     }
 

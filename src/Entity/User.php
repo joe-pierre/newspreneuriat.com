@@ -37,6 +37,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    private $plainPassword;
+
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Post::class, orphanRemoval: true)]
     private Collection $posts;
 
@@ -117,6 +119,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
 
     /**
      * @see UserInterface
@@ -124,7 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     /**

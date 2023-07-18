@@ -24,7 +24,8 @@ class PostCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-        ->setPageTitle('index', 'Liste des articles')
+        ->setPageTitle(Crud::PAGE_INDEX, 'Liste des articles')
+        ->setPageTitle(Crud::PAGE_NEW, 'Créer un nouvel article')
         ;
     }
 
@@ -44,7 +45,7 @@ class PostCrudController extends AbstractCrudController
             SlugField::new('slug', label: 'Slug')->setTargetFieldName('title'),
             TextareaField::new('body', label: 'Contenu')->hideOnIndex(),
             DateTimeField::new('publishedAt', label: 'Date de publicaton'),
-            AssociationField::new('author', label: 'Auteur de l\'article'),
+            AssociationField::new('author', label: "Auteur de l'article"),
         ];
     }
 }
