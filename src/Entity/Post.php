@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\Timestampable;
@@ -38,6 +40,14 @@ class Post
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
+
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Attachment::class, orphanRemoval: true, cascade: ['persist'])]
+    private Collection $attachment;
+
+    public function __construct()
+    {
+        $this->attachment = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -100,6 +110,36 @@ class Post
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Attachment>
+     */
+    public function getAttachment(): Collection
+    {
+        return $this->attachment;
+    }
+
+    public function addAttachment(Attachment $attachment): self
+    {
+        if (!$this->attachment->contains($attachment)) {
+            $this->attachment->add($attachment);
+            $attachment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttachment(Attachment $attachment): self
+    {
+        if ($this->attachment->removeElement($attachment)) {
+            // set the owning side to null (unless already changed)
+            if ($attachment->getPost() === $this) {
+                $attachment->setPost(null);
+            }
+        }
 
         return $this;
     }

@@ -2,6 +2,8 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Attachment;
+use App\Entity\Post;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
@@ -20,7 +22,7 @@ class EventSubscriber implements EventSubscriberInterface
            $entityInstance->setPassword($this->passwordHasherInterface->hashPassword($entityInstance, $entityInstance->getPlainPassword()));
         }
     }
-    
+
     public static function getSubscribedEvents(): array
     {
         return [

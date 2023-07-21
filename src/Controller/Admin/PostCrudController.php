@@ -3,13 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Post;
+use App\Form\AttachmentType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -40,12 +43,17 @@ class PostCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        return [
-            TextField::new('title', label: 'Titre de l\'article'),
-            SlugField::new('slug', label: 'Slug')->setTargetFieldName('title'),
-            TextareaField::new('body', label: 'Contenu')->hideOnIndex(),
-            DateTimeField::new('publishedAt', label: 'Date de publicaton'),
-            AssociationField::new('author', label: "Auteur de l'article"),
-        ];
+        yield TextField::new('title', label: 'Titre de l\'article');
+        yield SlugField::new('slug', label: 'Slug')->setTargetFieldName('title');
+        yield TextareaField::new('body', label: 'Contenu')->hideOnIndex();
+        yield CollectionField::new('attachment')->setEntryType(AttachmentType::class)->onlyOnForms();
+        yield DateTimeField::new('publishedAt', label: 'Date de publicaton');
+        yield AssociationField::new('author', label: "Auteur de l'article");
+        yield CollectionField::new('attachment')->setTemplatePath('pages/layout/image.html.twig')->onlyOnDetail();
+    }
+    
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions->add(Crud::PAGE_INDEX, 'detail');
     }
 }
